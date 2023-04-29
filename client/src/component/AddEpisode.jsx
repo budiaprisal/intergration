@@ -1,15 +1,14 @@
 import Modal from "react-modal";
 import { useState } from "react";
-import { FaPlus} from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { API } from "../config/api";
 import Swal from "sweetalert2";
 import { useParams } from "react-router-dom";
 import { useMutation } from "react-query";
 
-
 function AddEpisodeModal({ isOpen, closeModal }) {
   const [addEpisode, setAddEpisode] = useState({});
-  const {id} = useParams()
+  const { id } = useParams();
   function handleSubmit(event) {
     event.preventDefault();
   }
@@ -17,49 +16,47 @@ function AddEpisodeModal({ isOpen, closeModal }) {
     setAddEpisode({
       ...addEpisode,
       [e.target.name]:
-      e.target.type === "file" ? e.target.files : e.target.value,
+        e.target.type === "file" ? e.target.files : e.target.value,
     });
   };
-  
+
   const addButtonHandler = useMutation(async (e) => {
     closeModal();
     try {
       e.preventDefault();
-      
+
       const config = {
         headers: {
           "Content-type": "multipart/form-data",
         },
       };
-      
+
       // console.log(form);
-      
+
       const formData = new FormData();
       formData.set("title", addEpisode.title);
       formData.set("linkfilm", addEpisode.linkfilm);
-      formData.set("film_id", id)
+      formData.set("film_id", id);
       formData.set(
         "thumbnailfilm",
         addEpisode?.thumbnailfilm[0],
-        addEpisode?.thumbnailfilm[0]?.name  
-        );
-        
-        console.log(formData);
-        // Configuration Content-type
-        
-        // Insert data user to database
-        const response = await API.post("/episode", formData, config);
-        console.log("add episode success : ", response);
-        
-        
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Add Episode Success",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-      
+        addEpisode?.thumbnailfilm[0]?.name
+      );
+
+      console.log(formData);
+      // Configuration Content-type
+
+      // Insert data user to database
+      const response = await API.post("/episode", formData, config);
+      console.log("add episode success : ", response);
+
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Add Episode Success",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     } catch (error) {
       Swal.fire({
         position: "center",
@@ -85,7 +82,7 @@ function AddEpisodeModal({ isOpen, closeModal }) {
       borderRadius: "5px",
       boxShadow: "0 2px 8px rgba(0, 0, 0, 0.25)",
       padding: "20px",
-      background: "#4285f4",
+      background: "black",
     },
     overlay: {
       background: "rgba(0, 0, 0, 0.5)",
@@ -99,10 +96,18 @@ function AddEpisodeModal({ isOpen, closeModal }) {
       contentLabel="Add Episode Modal"
       style={customStyles}
     >
-      <h2 style={{ color: "Chartreuse", marginBottom: "20px" }}><FaPlus/> Add Episode</h2>
-      <form onSubmit={(e)=> addButtonHandler.mutate(e)}>
+      <h2
+        className="text-white"
+        style={{ color: "black", marginBottom: "20px" }}
+      >
+        <div className="text-white" /> Add Episode
+      </h2>
+      <form onSubmit={(e) => addButtonHandler.mutate(e)} className="bg-black">
         <div className="form-group">
-          <label style={{ color: "white", fontSize:"14px", marginBottom: "5px" }} htmlFor="title">
+          <label
+            style={{ color: "white", fontSize: "14px", marginBottom: "5px" }}
+            htmlFor="title"
+          >
             Title
           </label>
           <input
@@ -116,7 +121,10 @@ function AddEpisodeModal({ isOpen, closeModal }) {
           />
         </div>
         <div className="form-group">
-          <label style={{ color: "white", fontSize: "14px", marginBottom: "5px" }} htmlFor="episodeLink">
+          <label
+            style={{ color: "white", fontSize: "14px", marginBottom: "5px" }}
+            htmlFor="episodeLink"
+          >
             Thumbnail Film
           </label>
           <input
@@ -132,7 +140,10 @@ function AddEpisodeModal({ isOpen, closeModal }) {
         </div>
 
         <div className="form-group">
-          <label style={{ color: "white", fontSize: "14px", marginBottom: "5px" }} htmlFor="episodeLink">
+          <label
+            style={{ color: "white", fontSize: "14px", marginBottom: "5px" }}
+            htmlFor="episodeLink"
+          >
             Link Film
           </label>
           <input
@@ -146,7 +157,11 @@ function AddEpisodeModal({ isOpen, closeModal }) {
           />
         </div>
 
-        <button type="submit" className="btn btn-danger" style={{ marginTop: "20px" }}>
+        <button
+          type="submit"
+          className="btn btn-danger"
+          style={{ marginTop: "20px" }}
+        >
           Submit
         </button>
       </form>

@@ -11,19 +11,24 @@ export default function TableTransactions() {
   });
   return (
     <Container className="mt-5 pt-5">
-      <h2 className="mb-4 text-light fw-semibold" style={{ background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Income Transaction</h2>
+      <h2 className="mt-5 text-white"> Income Transaction</h2>
+      <h2
+        className="mb-4 text-light fw-semibold"
+        style={{
+          background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+        }}
+      ></h2>
       <Table
+        className="border border-2 my-5"
         striped
         bordered
         hover
-        size="lg"
-        className="text-center text-align-center"
-        style={{
-          backgroundColor: "white",
-        }}
+        variant="dark"
       >
         <thead>
-          <tr style={{ color: "#E50914" }}>
+          <tr className="text-danger">
             <th>No</th>
             <th>Username</th>
             <th>Phone</th>

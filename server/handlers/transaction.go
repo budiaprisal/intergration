@@ -71,7 +71,7 @@ func (h *handlerTransaction) CreateTransaction(c echo.Context) error {
 	Startdate := time.Now()
 	Duedate := time.Now().Add(time.Hour * 24 * time.Duration(request.Days))
 
-	// Create Unique Transaction Id ...
+	// Create Unique Transaction Id midtrans
 	var transactionIsMatch = false
 	var transactionId int
 	for !transactionIsMatch {
@@ -94,11 +94,6 @@ func (h *handlerTransaction) CreateTransaction(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
 	}
-
-	// dataTransactions, err := h.TransactionRepository.GetTransaction(newTransactions.ID)
-	// if err != nil {
-	// 	return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
-	// }
 
 	// 1. Initiate Snap client
 	var s = snap.Client{}
@@ -125,6 +120,7 @@ func (h *handlerTransaction) CreateTransaction(c echo.Context) error {
 	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: snapResp})
 }
 
+// NOTIFIKASI PAYMENT
 func (h *handlerTransaction) Notification(c echo.Context) error {
 	var notificationPayload map[string]interface{}
 
@@ -141,6 +137,7 @@ func (h *handlerTransaction) Notification(c echo.Context) error {
 	fmt.Print("payload: ", notificationPayload)
 
 	transaction, _ := h.TransactionRepository.GetTransaction(order_id)
+
 	if transactionStatus == "capture" {
 		if fraudStatus == "challenge" {
 			h.TransactionRepository.UpdateTransaction("pending", order_id)
@@ -168,12 +165,13 @@ func (h *handlerTransaction) Notification(c echo.Context) error {
 	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Data: notificationPayload})
 }
 
+// midtrans
 func SendMail(status string, transaction models.Transaction) {
 
 	if status != transaction.Status && (status == "success") {
 		var CONFIG_SMTP_HOST = "smtp.gmail.com"
 		var CONFIG_SMTP_PORT = 587
-		var CONFIG_SENDER_NAME = "Waysbeans <neysatarigan@gmail.com@gmail.com>"
+		var CONFIG_SENDER_NAME = "dumbflix <walidwalidsaja11@gmail.com>"
 		var CONFIG_AUTH_EMAIL = os.Getenv("EMAIL_SYSTEM")
 		var CONFIG_AUTH_PASSWORD = os.Getenv("PASSWORD_SYSTEM")
 
@@ -181,7 +179,7 @@ func SendMail(status string, transaction models.Transaction) {
 
 		mailer := gomail.NewMessage()
 		mailer.SetHeader("From", CONFIG_SENDER_NAME)
-		mailer.SetHeader("To", "rikilah930@gmail.com")
+		mailer.SetHeader("To", transaction.User.Email)
 		mailer.SetHeader("Subject", "Transaction Status")
 		mailer.SetBody("text/html", fmt.Sprintf(`<!DOCTYPE html>
     <html lang="en">
@@ -217,6 +215,6 @@ func SendMail(status string, transaction models.Transaction) {
 			log.Fatal(err.Error())
 		}
 
-		log.Println("Mail sent! to " + CONFIG_AUTH_EMAIL)
+		log.Println("Mail sent! to " + transaction.User.Email)
 	}
 }

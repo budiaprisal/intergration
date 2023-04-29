@@ -1,4 +1,4 @@
-import { useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { API } from "../config/api";
 import { useQuery } from "react-query";
 import { Container, NavLink } from "react-bootstrap";
@@ -7,19 +7,19 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper";
 import { Link } from "react-router-dom";
-import{FaPlus, FaRegEdit, FaPlay  } from "react-icons/fa"
+import { FaPlus, FaRegEdit, FaPlay } from "react-icons/fa";
 import { useState } from "react";
 import AddEpisodeModal from "./AddEpisode";
-import ReactPlayer from 'react-player'
+import ReactPlayer from "react-player";
 import UpdateEpisodeModal from "./UpdateEpisode";
 
 export default function Details(props) {
   // const { IsLogin, user } = props;
-  const {id} = useParams();
+  const { id } = useParams();
 
   // modal state and functions
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [modalIsOpenn, setModalIsOpenn] = useState (false);
+  const [modalIsOpenn, setModalIsOpenn] = useState(false);
 
   function openModal() {
     setModalIsOpen(true);
@@ -36,7 +36,6 @@ export default function Details(props) {
     setModalIsOpenn(false);
   }
 
-
   // Fetching product data from database
   let { data: films } = useQuery("filmCache1", async () => {
     const response = await API.get(`/film/${id}`);
@@ -52,54 +51,84 @@ export default function Details(props) {
       <div>
         <Container className="justify-content-center pt-5 mt-4">
           <div>
-            <iframe width="100%" height="720" src={films?.linkfilm} alt="Video" allowFullScreen title="111" />
+            <iframe
+              width="100%"
+              height="720"
+              src={films?.linkfilm}
+              alt="Video"
+              allowFullScreen
+              title="111"
+            />
           </div>
-            <div className="row mt-4"> 
-               <div className="col-md-2 col-6 mb-3">    
-                  <img className="rounded" src={"http://localhost:5000/uploads/"+films?.thumbnailfilm} width= "200px" height="300px" style={{ objectFit:"cover" }} alt="Card"/>
-               </div>
-               <div className="col-md-5 col-6 px-md-5">
-               <h2 className="fw-bold text-light mt-3">{films?.title}</h2>
-                <div className="d-flex gap-3">
-                  <p className="text-secondary fw-lighter ">{films?.year}</p>
-                  <p className="text-secondary fw-lighter border rounded pe-3 ps-3 mb-3">{films?.category.name}</p>
-                </div>
-                <p className="text-light" style={{textAlign:"justify"}}>{films?.description}</p>
-               </div>
-               <div className="col-md-5"> 
-               <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
+          <div className="row mt-4">
+            <div className="col-md-2 col-6 mb-3">
+              <img
+                className="rounded"
+                src={"http://localhost:5000/uploads/" + films?.thumbnailfilm}
+                width="200px"
+                height="300px"
+                style={{ objectFit: "cover" }}
+                alt="Card"
+              />
+            </div>
+            <div className="col-md-5 col-6 px-md-5">
+              <h2 className="fw-bold text-light mt-3">{films?.title}</h2>
+              <div className="d-flex gap-3">
+                <p className="text-secondary fw-lighter ">{films?.year}</p>
+                <p className="text-secondary fw-lighter border rounded pe-3 ps-3 mb-3">
+                  {films?.category.name}
+                </p>
+              </div>
+              <p className="text-light" style={{ textAlign: "justify" }}>
+                {films?.description}
+              </p>
+            </div>
+            <div className="col-md-5">
+              <Swiper
+                navigation={true}
+                modules={[Navigation]}
+                className="mySwiper"
+              >
                 {episode?.map((data, i) => (
-
-                    <SwiperSlide key={i}>
-
-                      <div className="carousel-item active" >
-                        <ReactPlayer url={data.linkfilm} light={`http://localhost:5000/uploads/${data.thumbnailfilm}`} width={500} height={300}/>
-                        <p className="text-center mt-2 text-light">{data.title}</p>
-                      </div>
-
-                    </SwiperSlide>
-
+                  <SwiperSlide key={i}>
+                    <div className="carousel-item active">
+                      <ReactPlayer
+                        url={data.linkfilm}
+                        light={`http://localhost:5000/uploads/${data.thumbnailfilm}`}
+                        width={500}
+                        height={300}
+                      />
+                      <p className="text-center mt-2 text-light">
+                        {data.title}
+                      </p>
+                    </div>
+                  </SwiperSlide>
                 ))}
-                    
-                </Swiper>
+              </Swiper>
 
-                    <div className="d-flex gap-4">
-                      <button onClick={openModal} className="btn btn-outline-success btn-sm">
-                     <FaPlus /> Add Episode
-                     </button>
-                     <button onClick={openUpdateModal} className="btn btn-outline-warning btn-sm">
-                     <FaRegEdit /> Edit Episode
-                     </button>
-                     
-                     </div>
-                
-                </div>
+              <div className="d-flex gap-4">
+                <button
+                  onClick={openModal}
+                  className="btn btn-outline-success btn-sm"
+                >
+                  <FaPlus /> Add Episode
+                </button>
+                <button
+                  onClick={openUpdateModal}
+                  className="btn btn-outline-warning btn-sm"
+                >
+                  <FaRegEdit /> Edit Episode
+                </button>
+              </div>
+            </div>
           </div>
         </Container>
-        <UpdateEpisodeModal isOpen={modalIsOpenn} closeModal={closeUpdateModal}/>
+        <UpdateEpisodeModal
+          isOpen={modalIsOpenn}
+          closeModal={closeUpdateModal}
+        />
         <AddEpisodeModal isOpen={modalIsOpen} closeModal={closeModal} />
       </div>
-      
     </>
   );
 }

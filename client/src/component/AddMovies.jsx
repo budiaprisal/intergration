@@ -14,7 +14,7 @@ function AdminAddMovies() {
 
   const title = " Admin Add Movies";
   document.title = "Dumbflix | " + title;
-
+  const [preview, setPreview] = useState(null);
   const [categoryId, setCategoryId] = useState([]);
 
   const [addFilms, setAddFilms] = useState({});
@@ -36,7 +36,7 @@ function AdminAddMovies() {
     });
     if (e.target.type === "file") {
       let url = URL.createObjectURL(e.target.files[0]);
-      setImageUrl(url);
+      setPreview(url);
     }
   };
 
@@ -51,6 +51,8 @@ function AdminAddMovies() {
       };
 
       if (addFilms.category_id === "") {
+        setPreview(null);
+
         setAddFilms({ ...addFilms, CategoryID: categoryId[0]?.id });
       }
       // console.log(form);
@@ -75,7 +77,6 @@ function AdminAddMovies() {
       // Insert data user to database
       const response = await API.post("/film", formData, config);
       console.log("add movies success : ", response);
-
       Navigate("/");
 
       Swal.fire({
@@ -102,11 +103,25 @@ function AdminAddMovies() {
       className="w-75 mt-5 pt-5 mx-auto"
       onSubmit={(e) => addButtonHandler.mutate(e)}
     >
+      {preview && (
+        <div>
+          <img
+            className="rounded"
+            src={preview}
+            style={{
+              maxWidth: "150px",
+              maxHeight: "150px",
+              objectFit: "cover",
+            }}
+            alt={preview}
+          />
+        </div>
+      )}
       <h4 className="text-light fw-semibold mb-4">Add Film</h4>
       <Row className="mb-3 formInputMovies">
         <Col xs={9}>
           <Form.Control
-            className="formInputMovies"
+            className="formInputMovies  mb-3 "
             placeholder="Title"
             type="text"
             style={{
@@ -128,7 +143,7 @@ function AdminAddMovies() {
               height: 40,
             }}
           >
-            <Form.Label className="d-flex">
+            <Form.Label className="d-flex ">
               <div className="d-flex justify-content-between align-text-center">
                 <Form.Control
                   name="thumbnailfilm"

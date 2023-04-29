@@ -1,36 +1,34 @@
 import Modal from "react-modal";
 import { useState } from "react";
-import { FaRegEdit} from "react-icons/fa";
+import { FaRegEdit } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import { useMutation,useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import Swal from "sweetalert2";
 import { API } from "../config/api";
 import { useEffect } from "react";
 
 function UpdateEpisodeModal({ isOpen, closeModal }) {
   const [updateEpisode, setUpdateEpisode] = useState({});
-  const {id} = useParams()
-  
-  
+  const { id } = useParams();
+
   function handleSubmit(event) {
     event.preventDefault();
   }
-  
+
   const [episodeId, setEpisodeId] = useState([]);
-  let { data: episodes, } = useQuery("episodesCache", async () => {
+  let { data: episodes } = useQuery("episodesCache", async () => {
     const response = await API.get("/episodes");
     return response.data.data;
   });
   useEffect(() => {
     setEpisodeId(episodes);
   }, [episodes]);
-  
-  
+
   const handleChange = (e) => {
     setUpdateEpisode({
       ...updateEpisode,
       [e.target.name]:
-      e.target.type === "file" ? e.target.files : e.target.value,
+        e.target.type === "file" ? e.target.files : e.target.value,
     });
   };
 
@@ -38,7 +36,7 @@ function UpdateEpisodeModal({ isOpen, closeModal }) {
     closeModal();
     try {
       e.preventDefault();
-      
+
       const config = {
         headers: {
           "Content-type": "multipart/form-data",
@@ -49,33 +47,30 @@ function UpdateEpisodeModal({ isOpen, closeModal }) {
         setUpdateEpisode({ ...updateEpisode, EpisodeID: episodeId[0]?.id });
       }
 
-      
-
       const formData = new FormData();
       formData.set("title", updateEpisode.title);
       formData.set("linkfilm", updateEpisode.linkfilm);
-      formData.set("film_id",updateEpisode.id)
+      formData.set("film_id", updateEpisode.id);
       formData.set(
         "thumbnailfilm",
         updateEpisode?.thumbnailfilm[0],
-        updateEpisode?.thumbnailfilm[0]?.name  
-        );
-        
-        console.log(formData);
+        updateEpisode?.thumbnailfilm[0]?.name
+      );
 
-        const response = await API.patch(`/episode/${id}`, formData, config);
-        console.log("add episode success : ", response);
+      console.log(formData);
 
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Add Episode Success",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-      
+      const response = await API.patch(`/episode/${id}`, formData, config);
+      console.log("add episode success : ", response);
+
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Add Episode Success",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     } catch (error) {
-      console.log("erorr response",error.response)
+      console.log("erorr response", error.response);
       Swal.fire({
         position: "center",
         icon: "error",
@@ -86,8 +81,7 @@ function UpdateEpisodeModal({ isOpen, closeModal }) {
       console.log(error);
     }
   });
-  
-    
+
   const customStyles = {
     content: {
       top: "50%",
@@ -101,7 +95,7 @@ function UpdateEpisodeModal({ isOpen, closeModal }) {
       borderRadius: "5px",
       boxShadow: "0 2px 8px rgba(0, 0, 0, 0.25)",
       padding: "20px",
-      background: "#4682B4",
+      background: "black",
     },
     overlay: {
       background: "rgba(0, 0, 0, 0.5)",
@@ -115,10 +109,18 @@ function UpdateEpisodeModal({ isOpen, closeModal }) {
       contentLabel="Add Episode Modal"
       style={customStyles}
     >
-      <h2 style={{ color: "	GreenYellow", marginBottom: "20px" }}><FaRegEdit/> Edit Episode</h2>
-      <form onSubmit={(e)=> updateButtonHandler.mutate(e)}>
+      <h2
+        className="text-white"
+        style={{ color: "	GreenYellow", marginBottom: "20px" }}
+      >
+        Edit Episode
+      </h2>
+      <form onSubmit={(e) => updateButtonHandler.mutate(e)}>
         <div className="form-group">
-          <label style={{ color: "red", fontSize:"16px", marginBottom: "5px" }} htmlFor="title">
+          <label
+            style={{ color: "white", fontSize: "16px", marginBottom: "5px" }}
+            htmlFor="title"
+          >
             Title
           </label>
           <input
@@ -132,7 +134,10 @@ function UpdateEpisodeModal({ isOpen, closeModal }) {
           />
         </div>
         <div className="form-group">
-          <label style={{ color: "red", fontSize: "16px", marginBottom: "5px" }} htmlFor="episodeLink">
+          <label
+            style={{ color: "white", fontSize: "16px", marginBottom: "5px" }}
+            htmlFor="episodeLink"
+          >
             Thumbnail Film
           </label>
           <input
@@ -148,7 +153,10 @@ function UpdateEpisodeModal({ isOpen, closeModal }) {
         </div>
 
         <div className="form-group">
-          <label style={{ color: "red", fontSize: "16px", marginBottom: "5px" }} htmlFor="episodeLink">
+          <label
+            style={{ color: "white", fontSize: "16px", marginBottom: "5px" }}
+            htmlFor="episodeLink"
+          >
             Link Film
           </label>
           <input
@@ -162,7 +170,11 @@ function UpdateEpisodeModal({ isOpen, closeModal }) {
           />
         </div>
 
-        <button type="submit" className="btn btn-danger" style={{ marginTop: "20px" }}>
+        <button
+          type="submit"
+          className="btn btn-danger"
+          style={{ marginTop: "20px" }}
+        >
           Submit
         </button>
       </form>

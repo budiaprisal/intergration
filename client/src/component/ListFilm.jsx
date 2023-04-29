@@ -120,7 +120,7 @@ function ListFilm() {
                 <div className="d-flex bg-black justify-content-center">
                   <Link
                     to={`/updatemovie/${item.id}`}
-                    className="btn btn-warning "
+                    className="btn btn-warning px-4 mx-2 "
                   >
                     Edit
                   </Link>

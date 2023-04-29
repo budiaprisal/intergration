@@ -10,7 +10,9 @@ type TransactionRepository interface {
 	FindTransactions() ([]models.Transaction, error)
 	GetTransaction(ID int) (models.Transaction, error)
 	CreateTransaction(transaction models.Transaction) (models.Transaction, error)
+	//midtrans
 	UpdateTransaction(status string, orderId int) (models.Transaction, error)
+	//
 }
 
 func RepositoryTransaction(db *gorm.DB) *repository {
@@ -43,6 +45,7 @@ func (r *repository) DeleteTransaction(transaction models.Transaction) (models.T
 	return transaction, err
 }
 
+// midtrans
 func (r *repository) UpdateTransaction(status string, ID int) (models.Transaction, error) {
 	var transaction models.Transaction
 	r.db.Preload("User").First(&transaction, ID)
@@ -53,7 +56,7 @@ func (r *repository) UpdateTransaction(status string, ID int) (models.Transactio
 		user.Subscribe = "true"
 		r.db.Save(&user)
 	}
-
+	//midtrans
 	var transactionData models.Transaction
 	r.db.First(&transactionData, ID)
 	transaction.Status = status
